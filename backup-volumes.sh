@@ -1,5 +1,5 @@
 #!/bin/bash
-BACKUP_DIR=/mnt/share1/Backups/$(date -I)
+BACKUP_DIR=~/backups/$(date -I)
 mkdir -p $BACKUP_DIR && cd $BACKUP_DIR
 
 CONTAINERS=(nzbget radarr sonarr transmission emby jackett)
