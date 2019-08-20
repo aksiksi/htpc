@@ -1,18 +1,13 @@
 # Steps:
-#   - Set "DATA" and "DOWNLOADS" env variables correctly for volume mounting
-#   - Or create a .env file in the same directory as the yml
-#   - If using systemd, make sure "cd" to the directory
-#
+#   1. Replace all "/data" volumes with paths to your external HDD mount.
+#   2. Enjoy!
 # Notes:
-#   We use a single Docker volume for Sonarr/Radarr as recommended by the team.
-#   In our case, we set it to the _root_ of the external drive.
+#   - We use a single Docker volume for Sonarr/Radarr as recommended by the team.
+#     In our case, we set it to the _root_ of the external drive.
 #
 # Run:
 #   sudo pip install docker-compose
 #   docker-compose up -d
-#
-# Example:
-#   DATA=/hd/ DOWNLOADS=/hd/Downloads/ docker-compose up -d
 version: "3"
 services:
   sonarr:
