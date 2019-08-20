@@ -1,5 +1,16 @@
 # RPI HTPC
 
+## Overview
+
+RPI-HTPC consists of the following:
+
+1. A ready-to-run Docker Compose file with the following containers: NZBGet, Transmission, Radarr, Sonarr, Emby, and Jackett
+2. A simple setup script that installs all prereqs on your RPi
+3. A systemd service that manages all of the containers for you
+4. A script that can backup your app configs (used via cron)
+
+**NOTE:** This has been tested on Raspbian on both RPi 3B+ and 4.
+
 ## Setup
 
 ### Configure Mounts
