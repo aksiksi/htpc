@@ -6,7 +6,7 @@ NUM_BACKUPS=7 # Only keep last week worth of backups
 
 # Rclone backup directory (optional)
 # Install rclone: https://rclone.org/downloads/
-# To setup rclone for GDrive: https://rclone.org/drive/
+# To setup rclone for Google Drive: https://rclone.org/drive/
 RCLONE_BACKUP_DIR="gdrive:HTPC"
 
 # Backup all config volumes
@@ -18,13 +18,7 @@ done
 
 # Compress entire backup directory
 echo "Compressing backup..."
-tar cvzf backup-$(date -I).tar.gz *
-
-# Move archive up and delete local backup directory
-echo "Cleaning up..."
-mv $BACKUP_ARCHIVE ..
-cd ..
-rm -rf $BACKUP_DIR
+tar cvzf $BACKUP_ARCHIVE *
 
 # If rclone is installed, assume it's configured
 if [[ `command -v rclone` ]]; then
@@ -33,11 +27,19 @@ if [[ `command -v rclone` ]]; then
     # Copy to GDrive
     rclone copy $BACKUP_ARCHIVE $RCLONE_BACKUP_DIR
 
-    # Delete all backups older than 7 days from GDrive
+    # Delete all backups older than NUM_BACKUPS days from GDrive
     rclone --min-age "$NUM_BACKUPS"d delete $RCLONE_BACKUP_DIR
 fi
 
-# Delete the "oldest" local backup
-echo "Deleting oldest backup..."
+echo "Cleaning up..."
+
+# Move archive up and delete local backup directory
+mv $BACKUP_ARCHIVE ..
+cd ..
+rm -rf $BACKUP_DIR
+
+# Remove the "oldest" local backup
 oldest=$(date -I --date="$(($NUM_BACKUPS+1)) days ago")
 rm -f backup-$oldest.tar.gz
+
+echo "Done!"
