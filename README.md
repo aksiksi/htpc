@@ -109,4 +109,4 @@ cd ~/config && docker-compose up -d --build
 
 All of the Docker containers used in this HTPC setup mount their config directories to `/config` inside the container.
 
-A simple shell script is included that can be triggered daily via `crontab` to backup all of the container config volumes to a directory of your choice.  See `backup-volumes.sh`.
+A simple shell script is included that can be triggered daily via `crontab` to backup all of the container config volumes to a directory of your choice.  See `backup.sh`. You can use `restore.sh` to restore from the latest backup genereate by the backup script.
