@@ -13,6 +13,15 @@ RPI-HTPC consists of the following:
 
 ## Setup
 
+### Clone this Repo
+
+Install `git`, then clone this repository:
+
+```bash
+sudo apt install git
+git clone https://github.com/aksiksi/rpi-media.git
+```
+
 ### Configure Mounts
 
 Configure any HDD mounts by editing `/etc/fstab` and running `sudo mount -a`.
@@ -41,7 +50,7 @@ This script will:
 3. Install Docker Compose
 4. Add current user to Docker group
 5. Copy `docker-compose.yml` to `~/config`
-6. Enable and start RPI-HTPC systemd service
+6. Enable and start systemd service
 7. Install Samba and NFS (see next section for setup)
 
 ## Optional: Samba and NFS Setup
