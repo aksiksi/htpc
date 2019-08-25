@@ -39,6 +39,14 @@ sudo pip install docker-compose
 # Add current user to docker group
 sudo usermod -aG $USER docker
 
+# Create required external volumes
+# We do this so that data is persisted across docker-compose sessions
+# Emby volume is mapped to directory; see docker-compose.yml
+CONTAINERS=(nzbget radarr sonarr transmission jackett)
+for container in "${CONTAINERS[@]}"; do
+    docker volume create $container
+done
+
 # Setup RPI-HTPC systemd service
 mkdir ~/config
 cp docker-compose.yml ~/config

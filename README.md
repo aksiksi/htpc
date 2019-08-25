@@ -23,6 +23,8 @@ In this guide, we assume a mount at `/mnt/share1/`.
 
 Make required changes to `docker-compose.yml`.  In particular, change all of the volume targets to point to your configured external HDD mount.
 
+Note that the config volumes for most of the containers are created in `setup.sh`.  This is done so that they persist between Docker Compose runs.
+
 ### Run Setup Script
 
 From the root of the repo:

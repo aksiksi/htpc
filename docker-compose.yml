@@ -106,14 +106,19 @@ volumes:
   # Named config containers
   sonarr:
     name: sonarr
+    external: true
   radarr:
     name: radarr
+    external: true
   nzbget:
     name: nzbget
+    external: true
   transmission:
     name: transmission
+    external: true
   jackett:
     name: jackett
+    external: true
   emby:
     name: emby
     driver_opts:
