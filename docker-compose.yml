@@ -8,7 +8,7 @@
 # Run:
 #   sudo pip install docker-compose
 #   docker-compose up -d
-version: "3"
+version: "3.7"
 services:
   sonarr:
     image: linuxserver/sonarr
@@ -18,8 +18,8 @@ services:
       PGID: 1000
       TZ: America/New_York
     volumes:
-      - ~/.sonarr:/config
-      - /mnt/share1:/data
+      - sonarr:/config
+      - share1:/data
     ports:
       - "8989:8989"
     depends_on:
@@ -34,8 +34,8 @@ services:
       PGID: 1000
       TZ: America/New_York
     volumes:
-      - ~/.radarr:/config
-      - /mnt/share1:/data
+      - radarr:/config
+      - share1:/data
     ports:
       - "7878:7878"
     depends_on:
@@ -50,9 +50,9 @@ services:
       PGID: 1000
       TZ: America/New_York
     volumes:
-      - ~/.nzbget:/config
-      - /mnt/share1/Downloads:/downloads
-      - /mnt/share1/Downloads/intermediate:/intermediate
+      - nzbget:/config
+      - downloads:/downloads
+      - intermediate:/intermediate
     ports:
       - "6789:6789"
     restart: unless-stopped
@@ -64,8 +64,8 @@ services:
       PGID: 1000
       TZ: America/New_York
     volumes:
-      - ~/.transmission:/config
-      - /mnt/share1/Downloads:/downloads
+      - transmission:/config
+      - downloads:/downloads
     ports:
     ports:
       - "9091:9091"
@@ -83,9 +83,9 @@ services:
       UID: 1000
       GID: 1000
     volumes:
-      - /mnt/share1/.emby:/config
-      - /mnt/share1/:/share1
-      - /mnt/share2/:/share2
+      - emby:/config
+      - share1:/share1
+      - share2:/share2
     restart: unless-stopped
   jackett:
     image: linuxserver/jackett
@@ -95,9 +95,54 @@ services:
       PGID: 1000
       TZ: America/New_York
     volumes:
-      - ~/.jackett:/config
-      - /mnt/share1/Downloads:/downloads
+      - jackett:/config
+      - downloads:/downloads
     ports:
     ports:
       - "9117:9117"
     restart: unless-stopped
+
+volumes:
+  # Named config containers
+  sonarr:
+    name: sonarr
+  radarr:
+    name: radarr
+  nzbget:
+    name: nzbget
+  transmission:
+    name: transmission
+  jackett:
+    name: jackett
+  emby:
+    name: emby
+    driver_opts:
+      type: none
+      device: /mnt/share1/.emby
+      o: bind
+
+  # Volumes shared across containers
+  downloads:
+    name: downloads
+    driver_opts:
+      type: none
+      device: /mnt/share1/Downloads
+      o: bind
+  intermediate:
+    name: intermediate
+    driver_opts:
+      type: none
+      device: /mnt/share1/Downloads/intermediate
+      o: bind
+  share1:
+    name: share1
+    driver_opts:
+      type: none
+      device: /mnt/share1/
+      o: bind
+  share2:
+    name: share2
+    driver_opts:
+      type: none
+      device: /mnt/share2/
+      o: bind
