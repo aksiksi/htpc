@@ -1,6 +1,8 @@
 #!/bin/bash
+[[ -z "$1" ]] && echo "Usage: ./backup.sh ROOT_BACKUP_DIR" && exit 1
+
 CONTAINERS=(nzbget radarr sonarr transmission emby jackett)
-BACKUP_DIR=~/backups/$(date -I)
+BACKUP_DIR=$1/$(date -I)
 BACKUP_ARCHIVE=backup-$(date -I).tar.gz
 NUM_BACKUPS=7 # Only keep last week worth of backups
 
