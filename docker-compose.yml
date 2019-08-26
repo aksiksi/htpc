@@ -56,22 +56,58 @@ services:
     ports:
       - "6789:6789"
     restart: unless-stopped
+  # Uncomment this for Transmssion *without* VPN
+  # transmission:
+  #   image: linuxserver/transmission
+  #   container_name: transmission
+  #   environment:
+  #     PUID: 1000
+  #     PGID: 1000
+  #     TZ: America/New_York
+  #   volumes:
+  #     - transmission:/config
+  #     - downloads:/downloads
+  #   ports:
+  #   ports:
+  #     - "9091:9091"
+  #     - "51413:51413"
+  #     - "51413:51413/udp"
+  #   restart: unless-stopped
   transmission:
-    image: linuxserver/transmission
+    # NOTE: Make sure to change your provider info below
     container_name: transmission
+    image: haugene/transmission-openvpn:latest-armhf
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - "/dev/net/tun"
+    restart: unless-stopped
+    ports:
+      - "9091:9091"
+      - "8888:8888"
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    sysctls:
+      net.ipv6.conf.all.disable_ipv6: 0
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - transmission:/config
+      - downloads:/data
     environment:
       PUID: 1000
       PGID: 1000
-      TZ: America/New_York
-    volumes:
-      - transmission:/config
-      - downloads:/downloads
-    ports:
-    ports:
-      - "9091:9091"
-      - "51413:51413"
-      - "51413:51413/udp"
-    restart: unless-stopped
+      OPENVPN_OPTS: --inactive 3600 --ping 10 --ping-exit 60
+      LOCAL_NETWORK: 192.168.0.0/24
+      TRANSMISSION_WEB_UI: transmission-web-control
+
+      # Provider list: http://haugene.github.io/docker-transmission-openvpn/supported-providers/
+      OPENVPN_PROVIDER: YOUR_PROVIDER
+
+      # Find config here: https://github.com/haugene/docker-transmission-openvpn/tree/master/openvpn
+      OPENVPN_CONFIG: PROVIDER_CONFIG
+      OPENVPN_USERNAME: USERNAME
+      OPENVPN_PASSWORD: PASSWORD
   emby:
     container_name: emby
     image: emby/embyserver_arm32v7:latest
@@ -101,6 +137,15 @@ services:
     ports:
       - "9117:9117"
     restart: unless-stopped
+  portainer:
+    image: portainer/portainer
+    command: -H unix:///var/run/docker.sock
+    restart: always
+    ports:
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
 
 volumes:
   # Named config containers
@@ -125,6 +170,7 @@ volumes:
       type: none
       device: /mnt/share1/.emby
       o: bind
+  portainer_data:
 
   # Volumes shared across containers
   downloads:
