@@ -116,6 +116,46 @@ This will only restart containers that need an update:
 cd ~/config && docker-compose up -d --build
 ```
 
+### Setting Up DLNA
+
+First, install `minidlna`:
+
+```
+sudo apt-get install minidlna
+```
+
+Open: `sudo vim /etc/minidlna.conf`
+
+Add the following config where relevant:
+
+```
+# User to run the daemon as (defaults to root)
+user=pi
+
+# Location of [V]ideo directories to serve
+media_dir=V,/mnt/share1/Movies
+media_dir=V,/mnt/share1/Series
+
+# Put the cache on external HDD insted of SD card
+db_dir=/mnt/share1/.cache/minidlna
+
+# Name your server
+friendly_name=RPIHTPC
+
+# Set to "no" for better performance
+inotify=yes
+```
+
+Stop the service, sync your folders, then start it again:
+
+```
+sudo service minidlna stop
+sudo minidlnad -R
+sudo service minidlna restart
+```
+
+If it doesn't work, make sure that port 8200 is open. Check the log for details: `tail -f /var/log/minidlna.log`
+
 ## Backing Up Container Configs
 
 All of the Docker containers used in this HTPC setup mount their config directories to `/config` inside the container.
