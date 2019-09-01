@@ -20,6 +20,7 @@ services:
     volumes:
       - sonarr:/config
       - share1:/data
+      - downloads:/downloads
     ports:
       - "8989:8989"
     depends_on:
@@ -36,6 +37,7 @@ services:
     volumes:
       - radarr:/config
       - share1:/data
+      - downloads:/downloads
     ports:
       - "7878:7878"
     depends_on:
@@ -93,7 +95,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - transmission:/config
-      - downloads:/data
+      - downloads:/downloads
     environment:
       PUID: 1000
       PGID: 1000
