@@ -69,7 +69,6 @@ services:
   #     - "51413:51413/udp"
   #   restart: unless-stopped
   transmission:
-    # NOTE: Make sure to change your provider info below
     container_name: transmission
     image: haugene/transmission-openvpn:latest-armhf
     cap_add:
@@ -112,6 +111,8 @@ services:
     volumes:
       - emby:/config
       - share1:/share1
+      # Mount this path to get access to site-specific certs
+      # - /etc/opt/rpi-htpc/letsencrypt/etc/letsencrypt:/le-ssl
     restart: unless-stopped
   jackett:
     image: linuxserver/jackett
@@ -136,6 +137,26 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
+  # OPTIONAL: Nginx + LetsEncrypt for HTTPS reverse proxy
+  # This can be used with e.g. Emby
+  # letsencrypt:
+  #   image: linuxserver/letsencrypt
+  #   container_name: letsencrypt
+  #   cap_add:
+  #     - NET_ADMIN
+  #   environment:
+  #     PUID: 1000
+  #     PGID: 1000
+  #     TZ: ${TIMEZONE}
+  #     URL: example.com
+  #     # SUBDOMAINS: www,
+  #     VALIDATION: http
+  #   volumes:
+  #     - /etc/opt/rpi-htpc/letsencrypt:/config
+  #   ports:
+  #     - "443:443"
+  #     - "80:80"
+  #   restart: unless-stopped
 
 volumes:
   # Named config containers
