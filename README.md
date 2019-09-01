@@ -34,6 +34,30 @@ Make required changes to `docker-compose.yml`.  In particular, change all of the
 
 Note that the config volumes for most of the containers are created in `setup.sh`.  This is done so that they persist between Docker Compose runs.
 
+### Create Environment File
+
+Create a file called `env` and place this at the root of this repo.  This file will be copied out to a `.env` file for use with Docker Compose.
+
+Make sure to specify the following variables that are required by the Docker Compose file:
+
+```
+# Timezone setting
+TIMEZONE=America/New_York
+
+# OpenVPN settings
+# Only required if using the Transmission + OpenVPN container
+# Provider list: http://haugene.github.io/docker-transmission-openvpn/supported-providers/
+# Find configs here: https://github.com/haugene/docker-transmission-openvpn/tree/master/openvpn
+OPENVPN_PROVIDER=PROVIDER
+OPENVPN_CONFIG=CONFIG
+OPENVPN_USERNAME=USERNAME
+OPENVPN_PASSWORD=PASSWORD
+
+# Share and downloads paths for shared volumes
+SHARE_PATH=/mnt/share1
+DOWNLOADS_PATH=/mnt/share1/Downloads
+```
+
 ### Run Setup Script
 
 From the root of the repo:
@@ -49,8 +73,8 @@ This script will:
 2. Start Docker service
 3. Install Docker Compose
 4. Add current user to Docker group
-5. Copy `docker-compose.yml` to `~/config`
-6. Enable and start systemd service
+5. Copy `docker-compose.yml` and `env` to `/etc/opt/rpi-htpc`
+6. Enable and start the systemd service
 7. Install Samba and NFS (see next section for setup)
 
 ## Optional: Samba and NFS Setup
@@ -108,7 +132,9 @@ sudo vim /etc/default/nfs-kernel-server
 sudo systemctl restart nfs-kernel-server.service
 ```
 
-### Setting Up DLNA
+## Optional: Setting Up DLNA
+
+DLNA is a widely supported media sharing protocol.  In some cases, clients may not have support for SMB or NFS, so DLNA is a good backup.
 
 First, install `minidlna`:
 
@@ -153,7 +179,7 @@ If it doesn't work, make sure that port 8200 is open. Check the log for details:
 This will only restart containers that need an update:
 
 ```
-cd ~/config && docker-compose up -d --build
+cd /etc/opt/rpi-htpc && docker-compose up -d --build
 ```
 
 ## Backing Up Container Configs

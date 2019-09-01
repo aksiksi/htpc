@@ -1,10 +1,3 @@
-# Steps:
-#   1. Replace all "/data" volumes with paths to your external HDD mount.
-#   2. Enjoy!
-# Notes:
-#   - We use a single Docker volume for Sonarr/Radarr as recommended by the team.
-#     In our case, we set it to the _root_ of the external drive.
-#
 # Run:
 #   sudo pip install docker-compose
 #   docker-compose up -d
@@ -16,7 +9,7 @@ services:
     environment:
       PUID: 1000
       PGID: 1000
-      TZ: America/New_York
+      TZ: ${TIMEZONE}
     volumes:
       - sonarr:/config
       - share1:/data
@@ -33,7 +26,7 @@ services:
     environment:
       PUID: 1000
       PGID: 1000
-      TZ: America/New_York
+      TZ: ${TIMEZONE}
     volumes:
       - radarr:/config
       - share1:/data
@@ -50,7 +43,7 @@ services:
     environment:
       PUID: 1000
       PGID: 1000
-      TZ: America/New_York
+      TZ: ${TIMEZONE}
     volumes:
       - nzbget:/config
       - downloads:/downloads
@@ -58,14 +51,14 @@ services:
     ports:
       - "6789:6789"
     restart: unless-stopped
-  # Uncomment this for Transmssion *without* VPN
+  # Uncomment this section for Transmssion *without* VPN
   # transmission:
   #   image: linuxserver/transmission
   #   container_name: transmission
   #   environment:
   #     PUID: 1000
   #     PGID: 1000
-  #     TZ: America/New_York
+  #     TZ: ${TIMEZONE}
   #   volumes:
   #     - transmission:/config
   #     - downloads:/downloads
@@ -102,14 +95,10 @@ services:
       OPENVPN_OPTS: --inactive 3600 --ping 10 --ping-exit 60
       LOCAL_NETWORK: 192.168.0.0/24
       TRANSMISSION_WEB_UI: transmission-web-control
-
-      # Provider list: http://haugene.github.io/docker-transmission-openvpn/supported-providers/
-      OPENVPN_PROVIDER: YOUR_PROVIDER
-
-      # Find config here: https://github.com/haugene/docker-transmission-openvpn/tree/master/openvpn
-      OPENVPN_CONFIG: PROVIDER_CONFIG
-      OPENVPN_USERNAME: USERNAME
-      OPENVPN_PASSWORD: PASSWORD
+      OPENVPN_PROVIDER: ${OPENVPN_PROVIDER}
+      OPENVPN_CONFIG: ${OPENVPN_CONFIG}
+      OPENVPN_USERNAME: ${OPENVPN_USERNAME}
+      OPENVPN_PASSWORD: ${OPENVPN_PASSWORD}
   emby:
     container_name: emby
     image: emby/embyserver_arm32v7:latest
@@ -117,13 +106,12 @@ services:
       - "8096:8096"
       - "8920:8920"
     environment:
-      TZ: America/New_York
       UID: 1000
       GID: 1000
+      TZ: ${TIMEZONE}
     volumes:
       - emby:/config
       - share1:/share1
-      - share2:/share2
     restart: unless-stopped
   jackett:
     image: linuxserver/jackett
@@ -131,7 +119,7 @@ services:
     environment:
       PUID: 1000
       PGID: 1000
-      TZ: America/New_York
+      TZ: ${TIMEZONE}
     volumes:
       - jackett:/config
       - downloads:/downloads
@@ -170,32 +158,27 @@ volumes:
     name: emby
     driver_opts:
       type: none
-      device: /mnt/share1/.emby
+      device: ${SHARE_PATH}/.emby
       o: bind
   portainer_data:
 
   # Volumes shared across containers
+  # Add more share paths as needed
   downloads:
     name: downloads
     driver_opts:
       type: none
-      device: /mnt/share1/Downloads
+      device: ${DOWNLOADS_PATH}
       o: bind
   intermediate:
     name: intermediate
     driver_opts:
       type: none
-      device: /mnt/share1/Downloads/intermediate
+      device: ${DOWNLOADS_PATH}/intermediate
       o: bind
   share1:
     name: share1
     driver_opts:
       type: none
-      device: /mnt/share1/
-      o: bind
-  share2:
-    name: share2
-    driver_opts:
-      type: none
-      device: /mnt/share2/
+      device: ${SHARE_PATH}
       o: bind

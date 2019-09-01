@@ -47,10 +47,13 @@ for container in "${CONTAINERS[@]}"; do
     docker volume create $container
 done
 
-# Setup RPI-HTPC systemd service
-mkdir ~/config
-cp docker-compose.yml ~/config
+# Create config directory
+sudo mkdir -p /etc/opt/rpi-htpc
+sudo chown ${USER}:${USER} /etc/opt/rpi-htpc
+cp docker-compose.yml /etc/opt/rpi-htpc
+cp env /etc/opt/rpi-htpc/.env
 
+# Setup RPI-HTPC systemd service
 sudo cp rpi-htpc.service /etc/systemd/system
 sudo systemctl enable rpi-htpc
 sudo systemctl start rpi-htpc
