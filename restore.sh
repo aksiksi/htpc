@@ -19,6 +19,7 @@ cd out/
 for container in "${CONTAINERS[@]}"; do
     echo "Restoring volume for $container..."
     docker run --rm --volumes-from $container -v $(pwd):/backup alpine /bin/sh -c "cd /config && tar xf /backup/$container.tar"
+    docker restart $container
 done
 
 # Remove extracted backup dir
