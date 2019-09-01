@@ -4,7 +4,7 @@
 CONTAINERS=(nzbget radarr sonarr transmission emby jackett)
 BACKUP_DIR=$1/$(date -I)
 BACKUP_ARCHIVE=backup-$(date -I).tar.gz
-NUM_BACKUPS=7 # Only keep last week worth of backups
+NUM_BACKUPS=2 # Only keep 2 days of backups
 
 # Rclone backup directory (optional)
 # Install rclone: https://rclone.org/downloads/
