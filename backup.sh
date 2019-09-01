@@ -1,10 +1,16 @@
 #!/bin/bash
-[[ -z "$1" ]] && echo "Usage: ./backup.sh ROOT_BACKUP_DIR" && exit 1
+[[ -z "$1" ]] && echo "Usage: ./backup.sh ROOT_BACKUP_DIR [CONTAINERS...]" && exit 1
 
-CONTAINERS=(nzbget radarr sonarr transmission emby jackett)
 BACKUP_DIR=$1/$(date -I)
 BACKUP_ARCHIVE=backup-$(date -I).tar.gz
-NUM_BACKUPS=2 # Only keep 2 days of backups
+NUM_BACKUPS=2 # Only keep 2 backups
+
+# Select which containers to backup, or use default list
+if [[ ! -z "$2" ]]; then
+    CONTAINERS=(${@:2})
+else
+    CONTAINERS=(nzbget radarr sonarr transmission emby jackett letsencrypt)
+fi
 
 # Rclone backup directory (optional)
 # Install rclone: https://rclone.org/downloads/

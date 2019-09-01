@@ -1,8 +1,14 @@
 #!/bin/bash
-[[ -z "$1" ]] && echo "Usage: ./restore.sh ROOT_BACKUP_DIR" && exit 1
+[[ -z "$1" ]] && echo "Usage: ./restore.sh ROOT_BACKUP_DIR [CONTAINERS...]" && exit 1
 
-CONTAINERS=(nzbget radarr sonarr transmission emby jackett)
 BACKUP_DIR=$1
+
+# Select which containers to backup, or use default list
+if [[ ! -z "$2" ]]; then
+    CONTAINERS=(${@:2})
+else
+    CONTAINERS=(nzbget radarr sonarr transmission emby jackett letsencrypt)
+fi
 
 cd $BACKUP_DIR
 
