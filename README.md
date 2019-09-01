@@ -108,14 +108,6 @@ sudo vim /etc/default/nfs-kernel-server
 sudo systemctl restart nfs-kernel-server.service
 ```
 
-## Update Docker Containers
-
-This will only restart containers that need an update:
-
-```
-cd ~/config && docker-compose up -d --build
-```
-
 ### Setting Up DLNA
 
 First, install `minidlna`:
@@ -155,6 +147,14 @@ sudo service minidlna restart
 ```
 
 If it doesn't work, make sure that port 8200 is open. Check the log for details: `tail -f /var/log/minidlna.log`
+
+## Update Docker Containers
+
+This will only restart containers that need an update:
+
+```
+cd ~/config && docker-compose up -d --build
+```
 
 ## Backing Up Container Configs
 
