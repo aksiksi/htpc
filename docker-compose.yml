@@ -111,8 +111,6 @@ services:
     volumes:
       - emby:/config
       - share1:/share1
-      # Mount this path to get access to site-specific certs
-      # - /etc/opt/rpi-htpc/letsencrypt/etc/letsencrypt:/le-ssl
     restart: unless-stopped
   jackett:
     image: linuxserver/jackett

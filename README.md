@@ -174,6 +174,60 @@ sudo service minidlna restart
 
 If it doesn't work, make sure that port 8200 is open. Check the log for details: `tail -f /var/log/minidlna.log`
 
+## Reverse Proxy
+
+The `docker-compose.yml` contains a service that runs Nginx + LetsEncrypt which can be used as a reverse proxy.
+
+### Dynamic DNS
+
+You can use `ddclient` to keep your DDNS up to date:
+
+```
+sudo apt-get install ddclient
+
+vim /etc/ddclient.conf
+# Configure your domain
+
+# Refresh entry every 300 seconds
+ddclient -daemon 300
+```
+
+### Setting Up LetsEncrypt Certs
+
+In my case, my DDNS points to `home.mydomain.com`. My root domain points to another server, so I only want to validate this subdomain (`ONLY_SUBDOMAINS=true`).
+
+Here is what my `docker-compose.yml` entry looks like for `letsencrypt`:
+
+```
+  letsencrypt:
+    image: linuxserver/letsencrypt
+    container_name: letsencrypt
+    cap_add:
+      - NET_ADMIN
+    environment:
+      PUID: 1000
+      PGID: 1000
+      TZ: ${TIMEZONE}
+      URL: mydomain.com
+      SUBDOMAINS: home
+      ONLY_SUBDOMAINS: "true"
+      VALIDATION: http
+    volumes:
+      - /etc/opt/rpi-htpc/letsencrypt:/config
+    ports:
+      - "443:443"
+      - "80:80"
+    restart: unless-stopped
+```
+
+### Configuring Proxy Endpoints
+
+All you need to do is rename the proxy configs you need located under: `/etc/opt/rpi-htpc/letsencrypt/nginx/proxy-confs/`
+
+Make sure to select either subfolder (`myhost.com/nzbget`) or subdomain (`nzbget.myhost.com`).
+
+If you are setting up Emby, ensure that authentication is set to "Handled by Proxy".
+
 ## Update Docker Containers
 
 This will only restart containers that need an update:
