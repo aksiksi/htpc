@@ -41,8 +41,10 @@ Create a file called `env` and place this at the root of this repo.  This file w
 Make sure to specify the following variables that are required by the Docker Compose file:
 
 ```
-# Timezone setting
+# General settings
 TIMEZONE=America/New_York
+PUID=1000
+PGID=1000
 
 # OpenVPN settings
 # Only required if using the Transmission + OpenVPN container
@@ -56,6 +58,10 @@ OPENVPN_PASSWORD=PASSWORD
 # Share and downloads paths for shared volumes
 SHARE_PATH=/mnt/share1
 DOWNLOADS_PATH=/mnt/share1/Downloads
+
+# LetsEncrypt + Nginx settings (OPTIONAL)
+LETSENCRYPT_URL=myurl.com
+LETSENCRYPT_SUBDOMAINS=home
 ```
 
 ### Run Setup Script
