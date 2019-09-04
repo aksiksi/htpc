@@ -150,7 +150,7 @@ services:
   #     # SUBDOMAINS: ${LETSENCRYPT_SUBDOMAINS}
   #     VALIDATION: http
   #   volumes:
-  #     - /etc/opt/rpi-htpc/letsencrypt:/config
+  #     - /etc/rpi-htpc/letsencrypt:/config
   #   ports:
   #     - "443:443"
   #     - "80:80"

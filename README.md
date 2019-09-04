@@ -61,7 +61,8 @@ DOWNLOADS_PATH=/mnt/share1/Downloads
 
 # LetsEncrypt + Nginx settings (OPTIONAL)
 LETSENCRYPT_URL=myurl.com
-LETSENCRYPT_SUBDOMAINS=home
+LETSENCRYPT_SUBDOMAINS=home,
+LETSENCRYPT_ONLY_SUBDOMAINS=true # Set to "false" if validating root domain too
 ```
 
 ### Run Setup Script
@@ -79,7 +80,7 @@ This script will:
 2. Start Docker service
 3. Install Docker Compose
 4. Add current user to Docker group
-5. Copy `docker-compose.yml` and `env` to `/etc/opt/rpi-htpc`
+5. Copy `docker-compose.yml` and `env` to `/etc/rpi-htpc`
 6. Enable and start the systemd service
 7. Install Samba and NFS (see next section for setup)
 
@@ -219,7 +220,7 @@ Here is what my `docker-compose.yml` entry looks like for `letsencrypt`:
       ONLY_SUBDOMAINS: "true"
       VALIDATION: http
     volumes:
-      - /etc/opt/rpi-htpc/letsencrypt:/config
+      - /etc/rpi-htpc/letsencrypt:/config
     ports:
       - "443:443"
       - "80:80"
@@ -228,7 +229,7 @@ Here is what my `docker-compose.yml` entry looks like for `letsencrypt`:
 
 ### Configuring Proxy Endpoints
 
-All you need to do is rename the proxy configs you need located under: `/etc/opt/rpi-htpc/letsencrypt/nginx/proxy-confs/`
+All you need to do is rename the proxy configs you need located under: `/etc/rpi-htpc/letsencrypt/nginx/proxy-confs/`
 
 Make sure to select either subfolder (`myhost.com/nzbget`) or subdomain (`nzbget.myhost.com`).
 
@@ -239,7 +240,7 @@ If you are setting up Emby, ensure that authentication is set to "Handled by Pro
 This will only restart containers that need an update:
 
 ```
-cd /etc/opt/rpi-htpc && docker-compose up -d --build
+cd /etc/rpi-htpc && docker-compose up -d --build
 ```
 
 ## Backing Up Container Configs

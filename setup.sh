@@ -48,10 +48,10 @@ for container in "${CONTAINERS[@]}"; do
 done
 
 # Create config directory
-sudo mkdir -p /etc/opt/rpi-htpc
-sudo chown ${USER}:${USER} /etc/opt/rpi-htpc
-cp docker-compose.yml /etc/opt/rpi-htpc
-cp env /etc/opt/rpi-htpc/.env
+sudo mkdir -p /etc/rpi-htpc
+sudo chown ${USER}:${USER} /etc/rpi-htpc
+cp docker-compose.yml /etc/rpi-htpc
+cp env /etc/rpi-htpc/.env
 
 # Setup RPI-HTPC systemd service
 sudo cp rpi-htpc.service /etc/systemd/system
