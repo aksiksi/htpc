@@ -19,6 +19,11 @@ services:
     depends_on:
       - nzbget
       - transmission
+    labels:
+      - "traefik.enable=true"
+      - "traefik.port=8989"
+      - "traefik.frontend.rule=Host:${DOMAIN};PathPrefix:/sonarr"
+      - "traefik.frontend.auth.basic=${HTTP_AUTH}"
     restart: unless-stopped
   radarr:
     image: linuxserver/radarr
@@ -36,6 +41,11 @@ services:
     depends_on:
       - nzbget
       - transmission
+    labels:
+      - "traefik.enable=true"
+      - "traefik.port=7878"
+      - "traefik.frontend.rule=Host:${DOMAIN};PathPrefix:/radarr"
+      - "traefik.frontend.auth.basic=${HTTP_AUTH}"
     restart: unless-stopped
   nzbget:
     image: linuxserver/nzbget
@@ -50,6 +60,11 @@ services:
       - intermediate:/intermediate
     ports:
       - "6789:6789"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.port=6789"
+      - "traefik.frontend.rule=Host:${DOMAIN};PathPrefix:/nzbget"
+      - "traefik.frontend.auth.basic=${HTTP_AUTH}"
     restart: unless-stopped
   # Uncomment this section for Transmssion *without* VPN
   # transmission:
@@ -63,10 +78,14 @@ services:
   #     - transmission:/config
   #     - downloads:/downloads
   #   ports:
-  #   ports:
   #     - "9091:9091"
   #     - "51413:51413"
   #     - "51413:51413/udp"
+  #   labels:
+  #     - "traefik.enable=true"
+  #     - "traefik.port=9091"
+  #     - "traefik.frontend.rule=Host:${DOMAIN};PathPrefix:/transmission"
+  #     - "traefik.frontend.auth.basic=${HTTP_AUTH}"
   #   restart: unless-stopped
   transmission:
     container_name: transmission
@@ -98,6 +117,11 @@ services:
       OPENVPN_CONFIG: ${OPENVPN_CONFIG}
       OPENVPN_USERNAME: ${OPENVPN_USERNAME}
       OPENVPN_PASSWORD: ${OPENVPN_PASSWORD}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.port=9091"
+      - "traefik.frontend.rule=Host:${DOMAIN};PathPrefix:/transmission"
+      - "traefik.frontend.auth.basic=${HTTP_AUTH}"
   emby:
     container_name: emby
     image: emby/embyserver_arm32v7:latest
@@ -111,6 +135,10 @@ services:
     volumes:
       - emby:/config
       - share1:/share1
+    labels:
+      - "traefik.enable=true"
+      - "traefik.port=8096"
+      - "traefik.frontend.rule=Host:${DOMAIN};PathPrefix:/emby"
     restart: unless-stopped
   jackett:
     image: linuxserver/jackett
@@ -129,32 +157,31 @@ services:
   portainer:
     image: portainer/portainer
     command: -H unix:///var/run/docker.sock
-    restart: always
     ports:
       - "9000:9000"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
-  # OPTIONAL: Nginx + LetsEncrypt for HTTPS reverse proxy
-  # This can be used with e.g. Emby
-  # letsencrypt:
-  #   image: linuxserver/letsencrypt
-  #   container_name: letsencrypt
-  #   cap_add:
-  #     - NET_ADMIN
-  #   environment:
-  #     PUID: ${PUID}
-  #     PGID: ${PGID}
-  #     TZ: ${TIMEZONE}
-  #     URL: ${LETSENCRYPT_URL}
-  #     # SUBDOMAINS: ${LETSENCRYPT_SUBDOMAINS}
-  #     VALIDATION: http
-  #   volumes:
-  #     - /etc/rpi-htpc/letsencrypt:/config
-  #   ports:
-  #     - "443:443"
-  #     - "80:80"
-  #   restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.port=9000"
+      - "traefik.frontend.auth.basic=${HTTP_AUTH}"
+      - "traefik.passHostHeader=true"
+      - "traefik.frontend.redirect.regex=^(.*)/portainer$$"
+      - "traefik.frontend.redirect.replacement=$$1/portainer/"
+      - "traefik.frontend.rule=Host:${DOMAIN};PathPrefix:/portainer;ReplacePathRegex: ^/portainer/(.*) /$$1"
+    restart: always
+  traefik:
+    container_name: traefik
+    image: traefik:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /etc/rpi-htpc/traefik/traefik.toml:/etc/traefik/traefik.toml
+      - /etc/rpi-htpc/traefik/acme.json:/etc/traefik/acme.json
 
 volumes:
   # Named config containers

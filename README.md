@@ -59,10 +59,9 @@ OPENVPN_PASSWORD=PASSWORD
 SHARE_PATH=/mnt/share1
 DOWNLOADS_PATH=/mnt/share1/Downloads
 
-# LetsEncrypt + Nginx settings (OPTIONAL)
-LETSENCRYPT_URL=myurl.com
-LETSENCRYPT_SUBDOMAINS=home,
-LETSENCRYPT_ONLY_SUBDOMAINS=true # Set to "false" if validating root domain too
+# Traefik reverse proxy settings (OPTIONAL)
+DOMAIN=site.myurl.com
+HTTP_AUTH=user:pass  # use "htpasswd -nB user" to get hashed password
 ```
 
 ### Run Setup Script
