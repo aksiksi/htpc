@@ -191,11 +191,35 @@ You can use `ddclient` to keep your DDNS up to date:
 ```
 sudo apt-get install ddclient
 
-vim /etc/ddclient.conf
-# Configure your domain
-
 # Refresh entry every 300 seconds
 ddclient -daemon 300
+```
+
+Configure your domain (e.g., with Namecheap DDNS) by editing `/etc/ddclient.conf`:
+
+```
+use=web, web=dynamicdns.park-your-domain.com/getip
+protocol=namecheap
+server=dynamicdns.park-your-domain.com
+login=domain.com
+password=PASSWORD
+# Host, if applicable (e.g., www)
+home
+```
+
+Configure as daemon and start the systemd service:
+
+```
+sudo vim /etc/default/ddclient
+# => run_daemon="true"
+sudo systemctl start ddclient
+```
+
+Or use the ddclient Docker container. If you go this way, just add that config to `/config/ddclient.conf`:
+
+```
+vi /config/ddclient.conf
+docker exec -it ddclient /bin/bash
 ```
 
 ### Setting Up LetsEncrypt Certs

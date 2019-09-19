@@ -182,6 +182,16 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /etc/rpi-htpc/traefik/traefik.toml:/etc/traefik/traefik.toml
       - /etc/rpi-htpc/traefik/acme.json:/etc/traefik/acme.json
+  ddclient:
+    image: linuxserver/ddclient
+    container_name: ddclient
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TIMEZONE}
+    volumes:
+      - ddclient:/config
+    restart: unless-stopped
 
 volumes:
   # Named config containers
@@ -207,6 +217,7 @@ volumes:
       device: ${SHARE_PATH}/.emby
       o: bind
   portainer_data:
+  ddclient:
 
   # Volumes shared across containers
   # Add more share paths as needed
