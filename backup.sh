@@ -17,8 +17,15 @@ fi
 # To setup rclone for Google Drive: https://rclone.org/drive/
 RCLONE_BACKUP_DIR="gdrive:HTPC"
 
-# Backup all config volumes
+# Create backup dir
 mkdir -p $BACKUP_DIR && cd $BACKUP_DIR
+
+# Copy out docker-compose configs
+cp /etc/rpi-htpc/docker-compose.yml .
+cp /etc/rpi-htpc/.env .
+cp -R /etc/rpi-htpc/traefik traefik-configs
+
+# Backup all config volumes
 for container in "${CONTAINERS[@]}"; do
     echo "Backing up volume for $container.."
     docker run --rm --volumes-from $container -v $(pwd):/backup alpine /bin/sh -c "cd /config && tar cf /backup/$container.tar *"

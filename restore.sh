@@ -28,6 +28,16 @@ for container in "${CONTAINERS[@]}"; do
     docker restart $container
 done
 
+# Restore docker-compose configs
+if [ -f /etc/rpi-htpc/docker-compose.yml ]; then
+    mv /etc/rpi-htpc/docker-compose.yml /etc/rpi-htpc/docker-compose.yml.bak
+    mv /etc/rpi-htpc/.env /etc/rpi-htpc/.env.bak
+fi
+
+mv docker-compose.yml /etc/rpi-htpc/
+mv .env /etc/rpi-htpc/
+mv traefik-config /etc/rpi-htpc/traefik
+
 # Remove extracted backup dir
 cd .. && rm -rf out/
 
