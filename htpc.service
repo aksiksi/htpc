@@ -1,19 +1,19 @@
 # Save as e.g. /etc/systemd/system/rpi-htpc.service
 [Unit]
-Description=RpiHtpc
+Description=Htpc
 Requires=docker.service
 After=docker.service
 
 [Service]
 Restart=always
-User=pi
-WorkingDirectory=/etc/rpi-htpc
+User=htpc
+WorkingDirectory=/etc/htpc-config
 
 # Start container when unit is started
-ExecStart=/usr/local/bin/docker-compose -f /etc/rpi-htpc/docker-compose.yml up
+ExecStart=/usr/local/bin/docker-compose -f /etc/htpc-config/docker-compose.yml up
 
 # Stop container when unit is stopped
-ExecStop=/usr/local/bin/docker-compose -f /etc/rpi-htpc/docker-compose.yml down -v
+ExecStop=/usr/local/bin/docker-compose -f /etc/htpc-config/docker-compose.yml down -v
 
 [Install]
 WantedBy=multi-user.target

@@ -1,15 +1,14 @@
-# RPI HTPC
+# HTPC
 
 ## Overview
 
-RPI-HTPC consists of the following:
+HTPC consists of the following:
 
 1. A ready-to-run Docker Compose file with the following containers: NZBGet, Transmission, Radarr, Sonarr, Emby, and Jackett
-2. A simple setup script that installs all prereqs on your RPi
+2. A simple setup script that installs all prereqs
 3. A systemd service that manages all of the containers for you
 4. A script that can backup your app configs (used via cron)
-
-**NOTE:** This has been tested on Raspbian on both RPi 3B+ and 4.
+5. Fully working reverse proxy thanks to Traefik
 
 ## Setup
 
@@ -19,7 +18,7 @@ Install `git`, then clone this repository:
 
 ```bash
 sudo apt install git
-git clone https://github.com/aksiksi/rpi-media.git
+git clone https://github.com/aksiksi/htpc.git
 ```
 
 ### Configure Mounts
@@ -79,7 +78,7 @@ This script will:
 2. Start Docker service
 3. Install Docker Compose
 4. Add current user to Docker group
-5. Copy `docker-compose.yml` and `env` to `/etc/rpi-htpc`
+5. Copy `docker-compose.yml` and `env` to `/etc/htpc-config`
 6. Enable and start the systemd service
 7. Install Samba and NFS (see next section for setup)
 
@@ -164,7 +163,7 @@ media_dir=V,/mnt/share1/Series
 db_dir=/mnt/share1/.cache/minidlna
 
 # Name your server
-friendly_name=RPIHTPC
+friendly_name=MYHTPC
 
 # Set to "no" for better performance
 inotify=yes
@@ -249,14 +248,6 @@ Here is what my `docker-compose.yml` entry looks like for `letsencrypt`:
       - "80:80"
     restart: unless-stopped
 ```
-
-### Configuring Proxy Endpoints
-
-All you need to do is rename the proxy configs you need located under: `/etc/rpi-htpc/letsencrypt/nginx/proxy-confs/`
-
-Make sure to select either subfolder (`myhost.com/nzbget`) or subdomain (`nzbget.myhost.com`).
-
-If you are setting up Emby, ensure that authentication is set to "Handled by Proxy".
 
 ## Update Docker Containers
 

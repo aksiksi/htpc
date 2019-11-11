@@ -1,0 +1,13 @@
+http:
+  services:
+    emby:
+      loadBalancer:
+        servers:
+        - url: "http://192.168.0.100:8096"
+
+  routers:
+    emby:
+      service: emby
+      rule: "Host(`mydomain.com`) && PathPrefix(`/emby`)"
+      tls:
+        certResolver: htpc
