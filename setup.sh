@@ -29,13 +29,12 @@ sudo chown ${USER}:${USER} /etc/htpc-config
 cp docker-compose.yml /etc/htpc-config
 cp env /etc/htpc-config/.env
 
-mkdir -p /etc/htpc-config/scripts
-cp scripts/transmission-unpack.sh /etc/htpc-config/scripts
+cp -R scripts /etc/htpc-config/scripts
 
 # Setup Traefik configs
-mkdir -p /etc/htpc-config/traefik
-cp traefik.yaml external.yaml /etc/htpc-config/traefik
+cp -R traefik /etc/htpc-config/traefik
 touch /etc/htpc-config/traefik/acme.json
+chmod 600 /etc/htpc-config/traefik/acme.json
 
 # Setup systemd service
 sudo cp htpc.service /etc/systemd/system

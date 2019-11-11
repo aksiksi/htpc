@@ -9,7 +9,7 @@ NUM_BACKUPS=2 # Only keep 2 backups
 if [[ ! -z "$2" ]]; then
     CONTAINERS=(${@:2})
 else
-    CONTAINERS=(nzbget radarr sonarr transmission emby jackett letsencrypt)
+    CONTAINERS=(nzbget radarr radarr4k sonarr transmission jackett traefik ombi)
 fi
 
 # Rclone backup directory (optional)
@@ -21,9 +21,10 @@ RCLONE_BACKUP_DIR="gdrive:HTPC"
 mkdir -p $BACKUP_DIR && cd $BACKUP_DIR
 
 # Copy out docker-compose configs
-cp /etc/rpi-htpc/docker-compose.yml .
-cp /etc/rpi-htpc/.env .
-cp -R /etc/rpi-htpc/traefik traefik-configs
+cp /etc/htpc-config/docker-compose.yml .
+cp /etc/htpc-config/.env .
+cp -R /etc/htpc-config/traefik traefik-configs
+cp -R /etc/htpc-config/scripts scripts
 
 # Backup all config volumes
 for container in "${CONTAINERS[@]}"; do
